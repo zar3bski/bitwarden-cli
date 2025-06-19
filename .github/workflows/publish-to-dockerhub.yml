@@ -1,0 +1,35 @@
+name: Push to Docker Hub
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "bw version (just the numbers, e.g. 2023.7.0)"
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install QEMU and other buildx deps
+        run: apt-get install qemu
+      #- name: Bitwarden Secrets Manager GitHub Action
+      #  uses: bitwarden/sm-action@14f92f1d294ae3c2b6a3845d389cd2c318b0dfd8 # v2.2.0
+      #  with:
+      #    access_token: ${{ secrets.ACCESS_TOKEN }}
+      #    secrets: |
+      #      d8a56663-858c-4aac-b0a2-afcd00edf2f1 > DOCKER_USER
+      #      98fc7325-57d2-4910-b37c-afcd00ed81b7 > DOCKER_PASSWORD
+      
+      
+      - name: dockerhub login
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      #- name: docker build
+      #  run: |
+      #    docker build . --file Dockerfile --tag $DOCKER_USER/bw-cli:latest \
+      #    --tag $DOCKER_USER/bw-cli:${{ github.event.inputs.version }} \
+      #    --tag $DOCKER_USER/bw-cli:v${{ github.event.inputs.version }}
+      #- name: docker push
+      #  run: docker push -a $DOCKER_USER/bw-cli
