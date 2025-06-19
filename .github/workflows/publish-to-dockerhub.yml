@@ -14,22 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      #- name: Bitwarden Secrets Manager GitHub Action
-      #  uses: bitwarden/sm-action@14f92f1d294ae3c2b6a3845d389cd2c318b0dfd8 # v2.2.0
-      #  with:
-      #    access_token: ${{ secrets.ACCESS_TOKEN }}
-      #    secrets: |
-      #      d8a56663-858c-4aac-b0a2-afcd00edf2f1 > DOCKER_USER
-      #      98fc7325-57d2-4910-b37c-afcd00ed81b7 > DOCKER_PASSWORD
-      
-      
+        uses: docker/setup-qemu-action@v3      
       - name: dockerhub login
         run: echo ${{ secrets.DOCKER_PASSWORD }} docker login -u ${{ secrets.DOCKER_USER }} 
-      #- name: docker build
-      #  run: |
-      #    docker build . --file Dockerfile --tag $DOCKER_USER/bw-cli:latest \
-      #    --tag $DOCKER_USER/bw-cli:${{ github.event.inputs.version }} \
-      #    --tag $DOCKER_USER/bw-cli:v${{ github.event.inputs.version }}
-      #- name: docker push
-      #  run: docker push -a $DOCKER_USER/bw-cli
+      - name: docker buildx
+        run: |
+          docker buildx build . \
+          --build-arg BW_CLI_VERSION=${{ github.event.inputs.version }} \ 
+          --file Dockerfile \ 
+          --platform linux/amd64,linux/arm64 \
+          --tag ${{ secrets.DOCKER_USER }}/bw-cli:latest \
+          --tag ${{ secrets.DOCKER_USER }}/bw-cli:${{ github.event.inputs.version }} \
+          --push
