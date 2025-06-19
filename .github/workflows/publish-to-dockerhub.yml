@@ -25,8 +25,8 @@ jobs:
         run: |
           docker buildx build \
           --build-arg BW_CLI_VERSION=${{ github.ref_name }} \ 
+          --tag ${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:latest \
+          --tag ${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:${{ github.ref_name }} \
           --platform linux/amd64,linux/arm64 \
-          --tag ${{ secrets.DOCKER_USER }}/bw-cli:latest \
-          --tag ${{ secrets.DOCKER_USER }}/bw-cli:${{ github.ref_name }} \
           --push \
           ${{ github.event.repository.name }}
