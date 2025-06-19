@@ -1,12 +1,12 @@
 name: Push to Docker Hub
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "bw version (just the numbers, e.g. 2023.7.0)"
-        required: true
-        type: string
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
   build:
