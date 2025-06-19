@@ -17,6 +17,10 @@ jobs:
         uses: docker/setup-qemu-action@v3      
       - name: dockerhub login
         run: echo ${{ secrets.DOCKER_PASSWORD }} docker login -u ${{ secrets.DOCKER_USER }} 
+      - name: Set a multiarch builder
+        run: |
+            docker buildx create --name multiarch --driver docker-container --bootstrap && \
+            docker buildx use multiarch
       - name: docker buildx
         run: |
           docker buildx build \
