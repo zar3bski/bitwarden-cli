@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install QEMU and other buildx deps
-        run: apt-get install qemu
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       #- name: Bitwarden Secrets Manager GitHub Action
       #  uses: bitwarden/sm-action@14f92f1d294ae3c2b6a3845d389cd2c318b0dfd8 # v2.2.0
       #  with:
