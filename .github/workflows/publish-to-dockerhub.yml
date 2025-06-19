@@ -21,7 +21,6 @@ jobs:
         run: |
           docker buildx build \
           --build-arg BW_CLI_VERSION=${{ github.event.inputs.version }} \ 
-          --file Dockerfile \ 
           --platform linux/amd64,linux/arm64 \
           --tag ${{ secrets.DOCKER_USER }}/bw-cli:latest \
           --tag ${{ secrets.DOCKER_USER }}/bw-cli:${{ github.event.inputs.version }} \
