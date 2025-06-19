@@ -25,7 +25,7 @@ jobs:
       
       
       - name: dockerhub login
-        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        run: echo ${{ secrets.DOCKER_PASSWORD }} docker login -u ${{ secrets.DOCKER_USER }} 
       #- name: docker build
       #  run: |
       #    docker build . --file Dockerfile --tag $DOCKER_USER/bw-cli:latest \
