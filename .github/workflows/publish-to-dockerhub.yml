@@ -20,9 +20,9 @@ jobs:
       - name: docker buildx
         run: |
           docker buildx build \
-          --build-arg BW_CLI_VERSION=${{ github.event.inputs.version }} \ 
+          --build-arg BW_CLI_VERSION=${{ github.ref_name }} \ 
           --platform linux/amd64,linux/arm64 \
           --tag ${{ secrets.DOCKER_USER }}/bw-cli:latest \
-          --tag ${{ secrets.DOCKER_USER }}/bw-cli:${{ github.event.inputs.version }} \
+          --tag ${{ secrets.DOCKER_USER }}/bw-cli:${{ github.ref_name }} \
           --push \
           ${{ github.event.repository.name }}
