@@ -19,7 +19,7 @@ jobs:
         run: echo ${{ secrets.DOCKER_PASSWORD }} docker login -u ${{ secrets.DOCKER_USER }} 
       - name: docker buildx
         run: |
-          docker buildx build . \
+          docker buildx build \
           --build-arg BW_CLI_VERSION=${{ github.event.inputs.version }} \ 
           --file Dockerfile \ 
           --platform linux/amd64,linux/arm64 \
