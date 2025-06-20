@@ -7,6 +7,7 @@ COPY ./scripts/* /
 RUN apk add npm nginx apache2-utils doas && \
   npm install -g semver @bitwarden/cli@${BW_CLI_VERSION} && \
   adduser -u 28087 -g 'Nginx www user' -D wwwcbz && \
+  mkdir -p /usr/local/share/ca-certificates && \
   echo $'server{ \n\
   listen 8087; \n\
   auth_basic "Bitwarden protected area"; \n\
