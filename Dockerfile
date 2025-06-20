@@ -16,6 +16,10 @@ RUN apk add npm nginx apache2-utils doas && \
   location / { \n\
       proxy_pass "http://127.0.0.1:8088"; \n\
   } \n\
+  location /sync { \n\
+      auth_basic off; \n\
+      proxy_pass "http://127.0.0.1:8088"; \n\
+  } \n\
 }' > /etc/nginx/http.d/bitwarden-cli.conf && \
   echo $'permit nopass keepenv wwwcbz cmd /set-svc-credentials.sh\n\
   permit nopass keepenv wwwcbz cmd /update-ca-certificates.sh\n\
