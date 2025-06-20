@@ -1,0 +1,32 @@
+name: Push to Docker Hub
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3      
+      - name: dockerhub login
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+      - name: Set a multiarch builder
+        run: docker buildx create --name multiarch --driver docker-container --bootstrap
+      - name: Use multiarch builder
+        run: docker buildx use multiarch
+      - name: docker buildx
+        run: >
+          docker buildx build
+          --build-arg BW_CLI_VERSION=${{ github.ref_name }}
+          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:latest"
+          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:${{ github.ref_name }}"
+          --platform linux/amd64,linux/arm64
+          --push
+          ./
