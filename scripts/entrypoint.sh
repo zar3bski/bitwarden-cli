@@ -3,19 +3,13 @@
 VERSION=$(bw --version)
 set -e
 
-if [[ -z "${SVC_USER}" || -z "${SVC_PASSWORD}" ]]; then
-    echo "[ERROR] Inbound credentials missing (SVC_USER, SVC_PASSWORD)"
-    exit 1
-else
-    echo "[INFO] Setting credentials for $SVC_USER"
-    htpasswd -cbB -C 17 /etc/nginx/.htpasswd $SVC_USER $SVC_PASSWORD
-fi
+### Env setting
 
-echo "[INFO] Importing additional CA certificates"
-for f in /usr/local/share/ca-certificates/*; do
-    cat $f >>/etc/ssl/certs/ca-certificates.crt
-    echo "[INFO] $f imported"
-done
+doas /set-svc-credentials.sh
+
+doas /update-ca-certificates.sh
+
+### App setting
 
 echo "[INFO] configuring bitwarden-cli v.$VERSION"
 bw config server ${BW_HOST}
@@ -35,5 +29,5 @@ echo '[INFO] Running `bw server` on  127.0.0.1:8088'
 bw serve --hostname 127.0.0.1 --port 8088 &
 
 echo '[INFO] Running `nginx` on  0.0.0.0:8087'
-nginx
+doas nginx
 tail -f /var/log/nginx/*.log
