@@ -2,9 +2,11 @@ FROM alpine:3.22.0
 
 ARG BW_CLI_VERSION
 
-RUN apk add npm nginx apache2-utils && \
+COPY ./scripts/* /
+
+RUN apk add npm nginx apache2-utils doas && \
   npm install -g semver @bitwarden/cli@${BW_CLI_VERSION} && \
-  adduser -g 'Nginx www user' -DH wwwcbz && \
+  adduser -u 28087 -g 'Nginx www user' -D wwwcbz && \
   echo $'server{ \n\
   listen 8087; \n\
   auth_basic "Bitwarden protected area"; \n\
@@ -12,9 +14,11 @@ RUN apk add npm nginx apache2-utils && \
   location / { \n\
       proxy_pass "http://127.0.0.1:8088"; \n\
   } \n\
-}' > /etc/nginx/http.d/bitwarden-cli.conf
-  
+}' > /etc/nginx/http.d/bitwarden-cli.conf && \
+  echo $'permit nopass keepenv wwwcbz cmd /set-svc-credentials.sh\n\
+  permit nopass keepenv wwwcbz cmd /update-ca-certificates.sh\n\
+  permit nopass keepenv wwwcbz cmd nginx' > /etc/doas.conf
 
-COPY ./entrypoint.sh /
+USER 28087
 
 CMD ["/entrypoint.sh"]
