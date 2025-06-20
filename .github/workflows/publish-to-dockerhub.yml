@@ -18,15 +18,15 @@ jobs:
       - name: dockerhub login
         run: echo ${{ secrets.DOCKER_PASSWORD }} docker login -u ${{ secrets.DOCKER_USER }} 
       - name: Set a multiarch builder
-        run: |
-          docker buildx create --name multiarch --driver docker-container --bootstrap;
-          docker buildx use multiarch;
+        run: docker buildx create --name multiarch --driver docker-container --bootstrap
+      - name: Use multiarch builder
+        run: docker buildx use multiarch
       - name: docker buildx
-        run: |
-          docker buildx build \
-          --build-arg BW_CLI_VERSION=${{ github.ref_name }} \ 
-          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:latest" \
-          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:${{ github.ref_name }}" \
-          --platform linux/amd64,linux/arm64 \
-          --push \
+        run: >
+          docker buildx build
+          --build-arg BW_CLI_VERSION=${{ github.ref_name }}
+          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:latest"
+          --tag "${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:${{ github.ref_name }}"
+          --platform linux/amd64,linux/arm64
+          --push
           ./${{ github.event.repository.name }}
