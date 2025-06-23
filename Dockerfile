@@ -9,6 +9,7 @@ RUN apk add npm nginx apache2-utils doas && \
   adduser -u 28087 -g 'Nginx www user' -D wwwcbz && \
   mkdir -p /usr/local/share/ca-certificates && \
   rm /etc/nginx/http.d/default.conf && \
+  sed -i 's/worker_processes auto;/worker_processes 2;/' /etc/nginx/nginx.conf && \
   echo $'server{ \n\
   listen 8087; \n\
   auth_basic "Bitwarden protected area"; \n\
